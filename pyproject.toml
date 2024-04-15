@@ -1,0 +1,46 @@
+[tool.poetry]
+name = "pystackw10"
+version = "0.1.0"
+description = "Projeto de uma clinica de medica com orientação do Pythonando."
+authors = ["Jorge Luiz Plautz <jorge.plautz@gmail.com>"]
+license = "GPLV3"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^5.0.4"
+pillow = "^10.3.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.1.1"
+pytest-cov = "^5.0.0"
+taskipy = "^1.12.2"
+blue = "^0.9.1"
+isort = "^5.13.2"
+ruff = "^0.3.7"
+
+[tool.isort]
+profile = "black"
+line_length = 79
+
+[tool.pytest.ini_options]
+python_files = [
+    "test*.py",
+    "*tests.py",
+]
+minversion = "6.0"
+addopts = "-ra -q -v -m slow"
+
+
+[tool.taskipy.tasks]
+lint = {cmd = "blue --check --diff . && isort --check --diff .", help = "Run lint to check by blue and isort."}
+clean = {cmd = "find ./ -name '*.pyc' -delete && find ./ -name '__pycache__' -delete && find ./ -name 'Thumbs.db' -delete && find ./ -name '*~' -delete && rm -rf .cache && rm -rf .pytest_cache && rm -rf dist && rm -rf *.egg-info && rm -rf htmlcov && rm -rf .tox/ && rm -rf site", help = "Clear the project off all files that are dispensables."}
+format = 'blue .  && isort .'
+pre_test = "task lint"
+test = "pytest -s -x --cov=healing -vv"
+post_test = "coverage html"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
