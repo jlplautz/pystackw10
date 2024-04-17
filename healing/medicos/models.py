@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -33,3 +35,27 @@ class DadosMedico(models.Model):
 
     def __str__(self):
         return self.user.username
+
+    @property
+    def proxima_data(self):
+        proxima_data = (
+            DatasAbertas.objects.filter(
+                user=self.user
+            )  # pegar datas deste user (medico)
+            .filter(
+                data__gt=datetime.now()
+            )  # pegar datas maior que a data atual
+            .filter(agendado=False)  # pegar datas que não foram agendadas
+            .order_by('data')  # ordena as datas em sequencia
+            .first()  # pegar a primeira data
+        )
+        return proxima_data
+
+
+class DatasAbertas(models.Model):
+    data = models.DateTimeField()
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    agendado = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.data)
