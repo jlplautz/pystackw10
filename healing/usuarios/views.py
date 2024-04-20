@@ -58,11 +58,6 @@ def cadastro(request):
 def login_view(request):
     if request.method == 'GET':
         return render(request, 'usuarios/login.html')
-
-
-def login_view(request):
-    if request.method == 'GET':
-        return render(request, 'usuarios/login.html')
     elif request.method == 'POST':
         username = request.POST.get('username')
         senha = request.POST.get('senha')
@@ -71,7 +66,7 @@ def login_view(request):
 
         if user:
             auth.login(request, user)
-            return redirect('/pacientes/home')
+            return redirect('/paciente/home')
 
         messages.add_message(
             request, constants.ERROR, 'Usuário ou senha incorretos'

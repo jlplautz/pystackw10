@@ -19,4 +19,5 @@ urlpatterns = [
         views.minhas_consultas,
         name='minhas_consultas',
     ),
+    path('consulta/<int:id_consulta>/', views.consulta, name='consulta'),
 ]

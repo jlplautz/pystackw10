@@ -4,9 +4,15 @@ from django.contrib import auth, messages
 from django.contrib.messages import constants
 from django.shortcuts import redirect, render
 
-from healing.medicos.models import DadosMedico, DatasAbertas, Especialidades
 
-from .models import Consulta
+from healing.medicos.models import (
+    DadosMedico,
+    DatasAbertas,
+    Especialidades,
+    is_medico,
+)
+
+from .models import Consulta, Documento
 
 
 # Create your views here.
@@ -38,7 +44,11 @@ def home(request):
         return render(
             request,
             'paciente/home.html',
-            {'medicos': medicos, 'especialidades': especialidades},
+            {
+                'medicos': medicos,
+                'especialidades': especialidades,
+                'is_medico': is_medico(request.user),
+            },
         )
 
 
@@ -53,7 +63,11 @@ def escolher_horario(request, id_dados_medicos):
         return render(
             request,
             'paciente/escolher_horario.html',
-            {'medico': medico, 'datas_abertas': datas_abertas},
+            {
+                'medico': medico,
+                'datas_abertas': datas_abertas,
+                'is_medico': is_medico(request.user),
+            },
         )
 
 
@@ -88,5 +102,29 @@ def minhas_consultas(request):
         return render(
             request,
             'paciente/minhas_consultas.html',
-            {'minhas_consultas': minhas_consultas},
+            {
+                'minhas_consultas': minhas_consultas,
+                'is_medico': is_medico(request.user),
+            },
         )
+
+
+def consulta(request, id_consulta):
+    if request.method == 'GET':
+        consulta = Consulta.objects.get(id=id_consulta)
+        dado_medico = DadosMedico.objects.get(user=consulta.data_aberta.user)
+        documentos = Documento.objects.filter(consulta=consulta)
+        return render(
+            request,
+            'paciente/consulta.html',
+            {
+                'consulta': consulta,
+                'dado_medico': dado_medico,
+                # 'is_medico': is_medico(request.user),
+                'documentos': documentos,
+            },
+        )
+
+# TODO: Fazer validação de segurança nos restantes pontos do código
+# TODO: Fazer o botão de cancelar consulta
+# TODO: Dashboard
