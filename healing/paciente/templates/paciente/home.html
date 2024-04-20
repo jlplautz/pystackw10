@@ -11,13 +11,13 @@
 
 
 {% block 'body' %}
-
+{% include "partials/navbar.html" %}
 <br><br>
 
 <div class="container">
     <div class="row">
         <div class="col-md-8">
-
+            {% comment %} {% include "partials/navbar.html" %} {% endcomment %}
             <p style="font-size: 25px" class="p-bold">Olá, <span class="color-dark">{{request.user.username}}.</span></p>
             
             <form action="{% url 'home' %}" post="GET">
@@ -44,11 +44,11 @@
                             <div class="col-md-3"><img src="{{medico.foto.url}}" class="foto-perfil-card" alt=""></div>
                             <div class="col-md">
                                 <p style="font-size: 20px" class="p-bold">Dr(a). {{medico.nome}} <i class="bi bi-patch-check-fill icon-main"></i></p>
-                                <p>{{medico.descricao}}</p>
+                                <p>&nbsp{{medico.descricao}}</p>
                             </div>
                         </div>  
-                        <p><i class="bi bi-map icon-main"></i>{{medico.rua}}, {{medico.numero}}.</p>
-                        <p><i class="bi bi-calendar2-week icon-main"></i>&nbsp&nbspProxima data: 
+                        <p><i class="bi bi-map icon-main"></i>&nbsp{{medico.rua}}, {{medico.numero}}.</p>
+                        <p><i class="bi bi-calendar2-week icon-main"></i>&nbspProxima data: 
                             {% if medico.proxima_data %}
                                 {{medico.proxima_data}}
                             {% else %}
